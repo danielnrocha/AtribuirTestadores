@@ -1,10 +1,11 @@
-import streamlit as st
 import json
-import pandas as pd
 import re
 import random
-from io import BytesIO
+import pandas as pd
 from PIL import Image
+from io import BytesIO
+import streamlit as st
+from collections import Counter
 
 def is_mocao(name):
     return bool(re.search(r'(\bEC\w*|Esta Casa)', name, re.IGNORECASE))
@@ -65,7 +66,33 @@ def escolher_testadores(todos_membros, responsavel, excluidos, dca_names):
                 return [m1, m2]
     return membros_validos[:2]
 
-def test_restricoes(cards, todos_membros, excluidos, dca_names):
+def escolher_testadores_equilibrado(todos_membros, responsavel, excluidos, dca_names, contagem):
+    # Filtra membros válidos
+    if isinstance(responsavel, list):
+        membros_validos = [m for m in todos_membros if m not in responsavel and not is_excluido(m, excluidos)]
+    else:
+        membros_validos = [m for m in todos_membros if m != responsavel and not is_excluido(m, excluidos)]
+    # Ordena por quem tem menos moções atribuídas
+    membros_validos = sorted(membros_validos, key=lambda m: contagem[m])
+    # Tenta todos os pares possíveis, priorizando os menos usados
+    for i in range(len(membros_validos)):
+        for j in range(i+1, len(membros_validos)):
+            m1, m2 = membros_validos[i], membros_validos[j]
+            if not (is_dca(m1, dca_names) and is_dca(m2, dca_names)):
+                return [m1, m2]
+    # Fallback: retorna os dois menos usados
+    return membros_validos[:2]
+
+def teste_equilibrio(contagem):
+    valores = [v for v in contagem.values() if v > 0]
+    if not valores:
+        st.warning("Nenhum testador foi atribuído.")
+        return
+    minimo, maximo = min(valores), max(valores)
+    st.info(f"Testadores: mínimo = {minimo} moções, máximo = {maximo} moções.")
+    assert maximo - minimo <= 1, "A diferença entre o que mais e o que menos testou é maior que 1!"
+
+def test_restricoes(cards, excluidos, dca_names, contagem):
     for card in cards:
         t1, t2 = card['testadores']
         responsavel = card['responsavel']
@@ -78,6 +105,9 @@ def test_restricoes(cards, todos_membros, excluidos, dca_names):
             assert t1 != responsavel, f"Testador {t1} é responsável"
             assert t2 != responsavel, f"Testador {t2} é responsável"
         assert not (is_dca(t1, dca_names) and is_dca(t2, dca_names)), f"Ambos testadores são DCAs: {t1}, {t2}"
+        
+    teste_equilibrio(contagem)
+    
     st.warning("Todos os testes passaram!")
 
 def main():
@@ -92,11 +122,22 @@ def main():
             color: #d45c0c !important;
             font-family: 'Montserrat', 'Segoe UI', sans-serif !important;
         }
-        .css-18e3th9, .stTextInput>div>div>input, .stNumberInput>div>input, .stDataFrame, .stDataFrame table {
+        .css-18e3th9 {
             background: #ec7518 !important;
             color: #d45c0c !important;
             font-family: 'Montserrat', 'Segoe UI', sans-serif !important;
-            font-weight: bold !important;
+        }
+        .stTextInput>div>div>input, .stNumberInput>div>input {
+            background: #ec7518 !important;
+            color: #fff !important;
+            border: 2px solid #fff !important;
+            border-radius: 6px;
+            font-weight: normal !important;
+        }
+        .stDataFrame, .stDataFrame table {
+            background: #ec7518 !important;
+            color: #fff !important;
+            font-weight: normal !important;
         }
         .stButton>button {
             background-color: #fff !important;
@@ -111,23 +152,6 @@ def main():
         .stButton>button:hover {
             background-color: #111 !important;
             color: #ec7518 !important;
-        }
-        /* Reduz tamanho do botão de upload */
-        .stFileUploader button {
-            font-size: 1em !important;
-            padding: 0.4em 1em !important;
-        }
-        .stTextInput>div>div>input, .stNumberInput>div>input {
-            background: #ec7518 !important;
-            color: #fff !important;
-            border: 2px solid #fff !important;
-            border-radius: 6px;
-            font-weight: bold !important;
-        }
-        .stDataFrame, .stDataFrame table {
-            background: #ec7518 !important;
-            color: #fff !important;
-            font-weight: bold !important;
         }
         .stMarkdown h1, .stMarkdown h2, .stMarkdown h3 {
             color: #d45c0c !important;
@@ -240,8 +264,12 @@ def main():
 
         # Seleção de testadores
         todos_membros = [m.get('fullName') for m in data.get('members', [])]
+        contagem = Counter({m: 0 for m in todos_membros})
         for card in resultado:
-            card['testadores'] = escolher_testadores(todos_membros, card['responsavel'], excluidos, dca_names)
+            testadores = escolher_testadores_equilibrado(todos_membros, card['responsavel'], excluidos, dca_names, contagem)
+            card['testadores'] = testadores
+            for t in testadores:
+                contagem[t] += 1
 
         # Validação
         if len(resultado) != qtd_mocoes:
@@ -249,7 +277,7 @@ def main():
 
         # Testa restrições
         try:
-            test_restricoes(resultado, todos_membros, excluidos, dca_names)
+            test_restricoes(resultado, excluidos, dca_names, contagem)
         except AssertionError as e:
             st.error(str(e))
 
