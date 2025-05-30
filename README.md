@@ -20,6 +20,7 @@ Este app Streamlit foi criado para a **SDUFRJ - Sociedade de Debates da UFRJ** e
   - Nenhum testador pode ser DCA junto com outro DCA
   - Nenhum testador pode estar na lista de excluídos
 - Exportação do resultado em Excel
+- Distribuição equilibrada: o app busca atribuir a mesma quantidade de moções para cada testador, sempre que possível, respeitando as restrições acima
 - Visual moderno, responsivo e customizado nas cores da SDUFRJ
 
 ---
