@@ -315,6 +315,10 @@ def main():
 
     st.dataframe(df)
 
+    st.markdown("#### Contagem final por testador:")
+    df_contagem = pd.DataFrame.from_dict(contagem, orient='index', columns=['Total de moções atribuídas']).sort_values(by='Total de moções atribuídas', ascending=False)
+    st.dataframe(df_contagem)
+
     # Imagem divertida no final
     st.markdown("---")
     img = Image.open("dracotia.png")
