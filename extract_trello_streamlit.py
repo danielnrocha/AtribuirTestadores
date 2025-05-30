@@ -30,6 +30,16 @@ def escape_quotes(obj):
     else:
         return obj
 
+def unescape_quotes(obj):
+    if isinstance(obj, str):
+        return obj.replace('\\"', '"')
+    elif isinstance(obj, list):
+        return [unescape_quotes(item) for item in obj]
+    elif isinstance(obj, dict):
+        return {k: unescape_quotes(v) for k, v in obj.items()}
+    else:
+        return obj
+
 def is_excluido(nome, excluidos):
     if not nome:
         return False
@@ -68,7 +78,7 @@ def test_restricoes(cards, todos_membros, excluidos, dca_names):
             assert t1 != responsavel, f"Testador {t1} é responsável"
             assert t2 != responsavel, f"Testador {t2} é responsável"
         assert not (is_dca(t1, dca_names) and is_dca(t2, dca_names)), f"Ambos testadores são DCAs: {t1}, {t2}"
-    st.success("Todos os testes passaram!")
+    st.warning("Todos os testes passaram!")
 
 def main():
     st.markdown(
@@ -246,11 +256,11 @@ def main():
         # Monta DataFrame para Excel
         df = pd.DataFrame([
             {
-                'Moção': c['titulo'],
-                'Infoslide': c['descricao'],
-                'Autor': c['responsavel'],
-                'Testador 1': c['testadores'][0] if c['testadores'] else None,
-                'Testador 2': c['testadores'][1] if c['testadores'] and len(c['testadores']) > 1 else None
+                'Moção': unescape_quotes(c['titulo']),
+                'Infoslide': unescape_quotes(c['descricao']),
+                'Autor': unescape_quotes(c['responsavel']),
+                'Testador 1': unescape_quotes(c['testadores'][0]) if c['testadores'] else None,
+                'Testador 2': unescape_quotes(c['testadores'][1]) if c['testadores'] and len(c['testadores']) > 1 else None
             }
             for c in resultado
         ])
@@ -261,7 +271,7 @@ def main():
             df.to_excel(writer, index=False)
 
     # Banner de sucesso
-    st.success("Arquivo gerado com sucesso! Faça o download abaixo.")
+    st.warning("Arquivo gerado com sucesso! Faça o download abaixo.")
 
     st.download_button(
         label='Baixar resultado em Excel',
@@ -275,7 +285,7 @@ def main():
     # Imagem divertida no final
     st.markdown("---")
     img = Image.open("dracotia.png")
-    st.image(img, caption="Parabéns! Testes separados com sucesso.", use_column_width=False, width=300)
+    st.image(img, caption="Parabéns! Testes separados com sucesso.", width=300)
 
 if __name__ == '__main__':
     main()
