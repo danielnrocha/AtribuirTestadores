@@ -73,20 +73,30 @@ def escolher_testadores_equilibrado(todos_membros, responsavel, excluidos, dca_n
     else:
         membros_validos = [m for m in todos_membros if m != responsavel and not is_excluido(m, excluidos)]
 
-    # Gera todos os pares possíveis
     pares_validos = []
+    media_uso = sum(contagem.values()) / max(1, len([v for v in contagem.values() if v > 0]))
+
     for m1, m2 in combinations(membros_validos, 2):
-        if not (is_dca(m1, dca_names) and is_dca(m2, dca_names)):
-            carga_total = contagem[m1] + contagem[m2]
-            diff = abs(contagem[m1] - contagem[m2])
-            pares_validos.append((m1, m2, carga_total, diff))
+        if is_dca(m1, dca_names) and is_dca(m2, dca_names):
+            continue
+
+        uso_m1 = contagem[m1]
+        uso_m2 = contagem[m2]
+        score_total = uso_m1 + uso_m2
+
+        # Penaliza desbalanceamento interno do par e desvio da média
+        desvio = abs(uso_m1 - uso_m2)
+        excesso = max(0, max(uso_m1, uso_m2) - media_uso)
+        score_impacto = score_total + desvio + excesso
+
+        pares_validos.append((score_impacto, m1, m2))
 
     if not pares_validos:
         return membros_validos[:2]  # fallback
 
-    # Ordena: menor carga total → menor diferença entre cargas → ordem alfabética estável
-    pares_validos.sort(key=lambda x: (x[2], x[3], x[0], x[1]))
-    return [pares_validos[0][0], pares_validos[0][1]]
+    pares_validos.sort()
+    _, escolhido1, escolhido2 = pares_validos[0]
+    return [escolhido1, escolhido2]
 
 def teste_equilibrio(contagem):
     valores = [v for v in contagem.values() if v > 0]
