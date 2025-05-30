@@ -81,23 +81,20 @@ def main():
         .stApp {
             color: #d45c0c !important;
             font-family: 'Montserrat', 'Segoe UI', sans-serif !important;
-            font-size: 1.25em !important;
         }
         .css-18e3th9, .stTextInput>div>div>input, .stNumberInput>div>input, .stDataFrame, .stDataFrame table {
             background: #ec7518 !important;
             color: #d45c0c !important;
             font-family: 'Montserrat', 'Segoe UI', sans-serif !important;
             font-weight: bold !important;
-            font-size: 1.1em !important;
         }
         .stButton>button {
             background-color: #fff !important;
             color: #ec7518 !important;
             border: none;
             border-radius: 6px;
-            padding: 0.7em 2em;
+            padding: 0.5em 1.5em;
             font-weight: bold !important;
-            font-size: 1.2em !important;
             font-family: 'Montserrat', 'Segoe UI', sans-serif !important;
             transition: background 0.2s;
         }
@@ -106,7 +103,7 @@ def main():
             color: #ec7518 !important;
         }
         /* Reduz tamanho do botão de upload */
-        .stFileUploader .css-1cpxqw2 {
+        .stFileUploader button {
             font-size: 1em !important;
             padding: 0.4em 1em !important;
         }
@@ -116,12 +113,10 @@ def main():
             border: 2px solid #fff !important;
             border-radius: 6px;
             font-weight: bold !important;
-            font-size: 1.1em !important;
         }
         .stDataFrame, .stDataFrame table {
             background: #ec7518 !important;
             color: #fff !important;
-            font-size: 1.1em !important;
             font-weight: bold !important;
         }
         .stMarkdown h1, .stMarkdown h2, .stMarkdown h3 {
@@ -135,7 +130,6 @@ def main():
             border-radius: 6px;
             font-weight: bold !important;
             border: 2px solid #fff !important;
-            font-size: 1.1em !important;
             font-family: 'Montserrat', 'Segoe UI', sans-serif !important;
         }
         .stDownloadButton>button:hover {
@@ -145,7 +139,6 @@ def main():
         label, .stTextInput label, .stNumberInput label, .stMarkdown, .st-bb, .st-c3, .st-c4, .st-c5, .st-c6, .st-c7, .st-c8, .st-c9 {
             font-weight: bold !important;
             color: #d45c0c !important;
-            font-size: 1.1em !important;
         }
         </style>
         ''',
