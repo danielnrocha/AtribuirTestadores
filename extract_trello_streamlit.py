@@ -6,6 +6,7 @@ from PIL import Image
 from io import BytesIO
 import streamlit as st
 from collections import Counter
+from itertools import combinations
 
 def is_mocao(name):
     return bool(re.search(r'(\bEC\w*|Esta Casa)', name, re.IGNORECASE))
@@ -67,21 +68,25 @@ def escolher_testadores(todos_membros, responsavel, excluidos, dca_names):
     return membros_validos[:2]
 
 def escolher_testadores_equilibrado(todos_membros, responsavel, excluidos, dca_names, contagem):
-    # Filtra membros válidos
     if isinstance(responsavel, list):
         membros_validos = [m for m in todos_membros if m not in responsavel and not is_excluido(m, excluidos)]
     else:
         membros_validos = [m for m in todos_membros if m != responsavel and not is_excluido(m, excluidos)]
-    # Ordena por quem tem menos moções atribuídas
-    membros_validos = sorted(membros_validos, key=lambda m: contagem[m])
-    # Tenta todos os pares possíveis, priorizando os menos usados
-    for i in range(len(membros_validos)):
-        for j in range(i+1, len(membros_validos)):
-            m1, m2 = membros_validos[i], membros_validos[j]
-            if not (is_dca(m1, dca_names) and is_dca(m2, dca_names)):
-                return [m1, m2]
-    # Fallback: retorna os dois menos usados
-    return membros_validos[:2]
+
+    # Gera todos os pares possíveis
+    pares_validos = []
+    for m1, m2 in combinations(membros_validos, 2):
+        if not (is_dca(m1, dca_names) and is_dca(m2, dca_names)):
+            carga_total = contagem[m1] + contagem[m2]
+            diff = abs(contagem[m1] - contagem[m2])
+            pares_validos.append((m1, m2, carga_total, diff))
+
+    if not pares_validos:
+        return membros_validos[:2]  # fallback
+
+    # Ordena: menor carga total → menor diferença entre cargas → ordem alfabética estável
+    pares_validos.sort(key=lambda x: (x[2], x[3], x[0], x[1]))
+    return [pares_validos[0][0], pares_validos[0][1]]
 
 def teste_equilibrio(contagem):
     valores = [v for v in contagem.values() if v > 0]
