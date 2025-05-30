@@ -24,32 +24,21 @@ Este app Streamlit foi criado para a **SDUFRJ - Sociedade de Debates da UFRJ** e
 
 ---
 
-## 🚀 Como rodar localmente
+## 📤 Como exportar o JSON do Trello
 
-1. **Clone o repositório:**
-   ```sh
-   git clone https://github.com/seu-usuario/seu-repo.git
-   cd seu-repo
-   ```
+1. Acesse o quadro do Trello com as moções.
+2. No canto superior direito, clique em **“Menu”** → **“Mais”** → **“Imprimir e exportar”**.
+3. Clique em **“Exportar JSON”**.
+4. Um link será aberto em uma nova aba com o conteúdo JSON do quadro.
+5. Salve a página como arquivo JSON (`Ctrl+S` ou `Cmd+S` e selecione o tipo “Todos os arquivos” com a extensão `.json` no final do nome do arquivo).
 
-2. **Instale as dependências:**
-   ```sh
-   pip install -r requirements.txt
-   ```
-
-3. **Rode o app:**
-   ```sh
-   streamlit run extract_trello_streamlit.py
-   ```
+> ⚠️ Não é necessário editar o JSON manualmente — o app faz o processamento automaticamente.
 
 ---
 
-## ☁️ Deploy na Streamlit Cloud
+## 🚀 Acesse o app online
 
-1. Suba este repositório para o GitHub.
-2. Acesse [Streamlit Cloud](https://streamlit.io/cloud) e conecte seu GitHub.
-3. Crie um novo app apontando para `extract_trello_streamlit.py`.
-4. Pronto! Compartilhe o link com seu time.
+👉 [https://atribuirtestadores.streamlit.app/](https://atribuirtestadores.streamlit.app/)
 
 ---
 
@@ -59,7 +48,7 @@ Este app Streamlit foi criado para a **SDUFRJ - Sociedade de Debates da UFRJ** e
 
 ---
 
-## 🧡 Feito para a SDUFRJ
+## 🧡 Feito pela SDUFRJ
 
 <div align="center">
   <img src="logo_sd.png" width="100"/><br>
