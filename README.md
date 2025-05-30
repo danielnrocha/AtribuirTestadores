@@ -13,7 +13,7 @@
 Este app Streamlit foi criado para a **SDUFRJ - Sociedade de Debates da UFRJ** e permite:
 
 - Upload do JSON exportado do Trello
-- Escolha da coluna de moções a serem testadas
+- Escolha da coluna de moções a serem testadas (nome exato dela no Trello)
 - Cadastro dinâmico de DCAs e membros que não podem testar
 - Sorteio automático de testadores, respeitando todas as restrições:
   - Nenhum testador pode ser o autor
