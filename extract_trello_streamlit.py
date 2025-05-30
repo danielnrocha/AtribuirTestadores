@@ -54,19 +54,6 @@ def is_dca(nome, dca_names):
     nome_lower = nome.strip().lower()
     return any(dca in nome_lower for dca in [n.strip().lower() for n in dca_names if n.strip()])
 
-def escolher_testadores(todos_membros, responsavel, excluidos, dca_names):
-    if isinstance(responsavel, list):
-        membros_validos = [m for m in todos_membros if m not in responsavel and not is_excluido(m, excluidos)]
-    else:
-        membros_validos = [m for m in todos_membros if m != responsavel and not is_excluido(m, excluidos)]
-    random.shuffle(membros_validos)
-    for i in range(len(membros_validos)):
-        for j in range(i+1, len(membros_validos)):
-            m1, m2 = membros_validos[i], membros_validos[j]
-            if not (is_dca(m1, dca_names) and is_dca(m2, dca_names)):
-                return [m1, m2]
-    return membros_validos[:2]
-
 def escolher_testadores_equilibrado(todos_membros, responsavel, excluidos, dca_names, contagem):
     if isinstance(responsavel, list):
         membros_validos = [m for m in todos_membros if m not in responsavel and not is_excluido(m, excluidos)]
