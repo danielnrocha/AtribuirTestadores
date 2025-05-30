@@ -60,7 +60,7 @@ Este app Streamlit foi criado para a **SDUFRJ - Sociedade de Debates da UFRJ** e
 ## 🧡 Feito para a SDUFRJ
 
 <div align="center">
-  <img src="logo_sd.png" width="100"/><br>
+  <img src="logo_sd.png" width="20"/><br>
   <b>SDUFRJ - Sociedade de Debates</b>
 </div>
 
