@@ -59,8 +59,7 @@ Este app Streamlit foi criado para a **SDUFRJ - Sociedade de Debates da UFRJ** e
 
 ## 📄 Licença
 
-MIT
-
+MIT — uma licença de código aberto permissiva que permite uso, modificação e redistribuição com poucas restrições. O software é fornecido “no estado em que se encontra”, sem garantias.
 ---
 
 > Dúvidas ou sugestões? Abra uma issue ou envie um pull request!
